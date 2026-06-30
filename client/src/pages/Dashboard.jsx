@@ -1,8 +1,13 @@
 function Dashboard() {
+  // Read the logged-in user's info from browser storage
+  const storedUser = localStorage.getItem("user")
+  const user = storedUser ? JSON.parse(storedUser) : null
+  const userName = user ? user.name : "Guest"
+
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
-      <p className="subtitle">Welcome back, Fiza!</p>
+      <p className="subtitle">Welcome back, {userName}!</p>
 
       <div className="widgets">
         <div className="widget-card">
