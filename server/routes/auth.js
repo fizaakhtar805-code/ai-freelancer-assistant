@@ -5,6 +5,7 @@ const crypto = require("crypto")
 const User = require("../models/User")
 const Profile = require("../models/Profile")
 const sendEmail = require("../utils/sendEmail")
+const generateAIContent = require("../config/gemini")
 
 const router = express.Router()
 
@@ -193,6 +194,23 @@ router.post("/reset-password", async (req, res) => {
   } catch (error) {
     console.log("Reset password error:", error)
     res.status(500).json({ message: "Something went wrong" })
+  }
+})
+
+
+
+
+
+
+
+// TEMPORARY AI test route
+router.get("/test-ai", async (req, res) => {
+  try {
+    const text = await generateAIContent("Write a one-sentence motivational quote for freelancers.")
+    res.json({ result: text })
+  } catch (error) {
+    console.log("AI error:", error)
+    res.status(500).json({ message: "AI failed", error: error.message })
   }
 })
 
