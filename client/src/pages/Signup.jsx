@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
 
 function Signup() {
@@ -8,10 +9,13 @@ function Signup() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   async function handleSignup() {
     setError("")
     setSuccess("")
+    setLoading(true)
 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/signup", {
@@ -19,8 +23,6 @@ function Signup() {
         email,
         password,
       })
-
-      // Show the "check your email" message instead of going to dashboard
       setSuccess(response.data.message)
     } catch (err) {
       if (err.response && err.response.data) {
@@ -29,6 +31,8 @@ function Signup() {
         setError("Something went wrong. Please try again.")
       }
     }
+
+    setLoading(false)
   }
 
   return (
@@ -61,15 +65,34 @@ function Signup() {
 
         <div className="form-group">
           <label>Password</label>
-          <input
-            type="password"
-            placeholder="Create a password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ width: "100%", paddingRight: "60px" }}
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#666",
+                display: "flex",
+              }}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          </div>
         </div>
 
-        <button className="btn-primary" onClick={handleSignup}>Sign Up</button>
+        <button className="btn-primary" onClick={handleSignup} disabled={loading}>
+          {loading ? "Please wait..." : "Sign Up"}
+        </button>
 
         <p className="auth-footer">Already have an account? <Link to="/">Login</Link></p>
       </div>

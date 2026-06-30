@@ -1,29 +1,32 @@
-import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useSearchParams, useNavigate, Link } from "react-router-dom"
+import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
 
-function Login() {
+function ResetPassword() {
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [message, setMessage] = useState("")
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleLogin() {
+  async function handleReset() {
+    setMessage("")
     setError("")
+    setLoading(true)
+
+    const token = searchParams.get("token")
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
+      const response = await axios.post("http://localhost:5000/api/auth/reset-password", {
+        token,
         password,
       })
-
-      localStorage.setItem("token", response.data.token)
-      localStorage.setItem("user", JSON.stringify(response.data.user))
-
-      navigate("/dashboard")
+      setMessage(response.data.message)
+      setTimeout(() => navigate("/"), 2000)
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message)
@@ -31,31 +34,24 @@ function Login() {
         setError("Something went wrong. Please try again.")
       }
     }
+
+    setLoading(false)
   }
 
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h1>Login</h1>
+        <h1>Reset Password</h1>
 
+        {message && <p style={{ color: "green", textAlign: "center" }}>{message}</p>}
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
         <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Password</label>
+          <label>New Password</label>
           <div style={{ position: "relative" }}>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder="Enter your new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={{ width: "100%", paddingRight: "60px" }}
@@ -77,13 +73,14 @@ function Login() {
           </div>
         </div>
 
-        <button className="btn-primary" onClick={handleLogin}>Login</button>
+        <button className="btn-primary" onClick={handleReset} disabled={loading}>
+          {loading ? "Please wait..." : "Reset Password"}
+        </button>
 
-        <p className="auth-footer"><Link to="/forgot-password">Forgot password?</Link></p>
-        <p className="auth-footer">Don't have an account? <Link to="/signup">Sign up</Link></p>
+        <p className="auth-footer">Back to <Link to="/">Login</Link></p>
       </div>
     </div>
   )
 }
 
-export default Login
+export default ResetPassword

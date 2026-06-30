@@ -124,4 +124,76 @@ router.get("/verify-email", async (req, res) => {
   }
 })
 
+// FORGOT PASSWORD route - sends reset email
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body
+
+    const user = await User.findOne({ email })
+    // For security, we don't reveal whether the email exists
+    if (!user) {
+      return res.status(200).json({ message: "If that email exists, a reset link has been sent." })
+    }
+
+    // Create a reset token valid for 1 hour
+    const resetToken = crypto.randomBytes(32).toString("hex")
+    user.resetToken = resetToken
+    user.resetTokenExpiry = Date.now() + 3600000 // 1 hour from now
+    await user.save()
+
+    const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`
+
+    await sendEmail(
+      email,
+      "Reset your password - AI Freelancer Assistant",
+      `
+        <h2>Password Reset Request</h2>
+        <p>You asked to reset your password. Click the button below to set a new one:</p>
+        <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#4361ee;color:#fff;text-decoration:none;border-radius:8px;">Reset Password</a>
+        <p>Or copy this link into your browser:</p>
+        <p>${resetLink}</p>
+        <p>This link will expire in 1 hour. If you didn't request this, you can ignore this email.</p>
+      `
+    )
+
+    res.status(200).json({ message: "If that email exists, a reset link has been sent." })
+  } catch (error) {
+    console.log("Forgot password error:", error)
+    res.status(500).json({ message: "Something went wrong" })
+  }
+})
+
+// RESET PASSWORD route - saves the new password
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { token, password } = req.body
+
+    if (!password) {
+      return res.status(400).json({ message: "Please enter a new password" })
+    }
+
+    // Find user with this token that hasn't expired
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() },
+    })
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset link" })
+    }
+
+    // Hash and save the new password
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(password, salt)
+    user.resetToken = ""
+    user.resetTokenExpiry = undefined
+    await user.save()
+
+    res.status(200).json({ message: "Password reset successfully! You can now log in." })
+  } catch (error) {
+    console.log("Reset password error:", error)
+    res.status(500).json({ message: "Something went wrong" })
+  }
+})
+
 module.exports = router
