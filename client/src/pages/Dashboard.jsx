@@ -80,7 +80,10 @@ function Dashboard() {
         <button onClick={() => navigate("/proposal-history")}>Proposal History</button>
         <button onClick={() => navigate("/cover-letter")}>Write Cover Letter</button>
         <button onClick={() => navigate("/cover-letter-history")}>Cover Letter History</button>
-        <button>Create Gig</button>
+        <button onClick={() => navigate("/gig-description")}>Create Gig</button>
+        <button onClick={() => navigate("/gig-description-history")}>Gig History</button>
+        <button onClick={() => navigate("/pricing-calculator")}>Price My Project</button>
+        <button onClick={() => navigate("/pricing-history")}>Pricing History</button>
         <button>Generate Invoice</button>
         <button>Create Contract</button>
       </div>

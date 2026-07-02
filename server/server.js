@@ -7,6 +7,8 @@ const mongoose = require("mongoose")
 const authRoutes = require("./routes/auth")
 const proposalRoutes = require("./routes/proposal")
 const coverLetterRoutes = require("./routes/coverletter")
+const gigRoutes = require("./routes/gig")
+const pricingRoutes = require("./routes/pricing")
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -20,6 +22,8 @@ app.use(express.json())
 app.use("/api/auth", authRoutes)
 app.use("/api/proposals", proposalRoutes)
 app.use("/api/coverletters", coverLetterRoutes)
+app.use("/api/gigs", gigRoutes)
+app.use("/api/pricing", pricingRoutes)
 
 app.get("/", (req, res) => {
   res.send("Server is running! 🚀")

@@ -9,6 +9,10 @@ import Proposal from "./pages/Proposal"
 import ProposalHistory from "./pages/ProposalHistory"
 import CoverLetter from "./pages/CoverLetter"
 import CoverLetterHistory from "./pages/CoverLetterHistory"
+import GigDescription from "./pages/GigDescription"
+import GigDescriptionHistory from "./pages/GigDescriptionHistory"
+import PricingCalculator from "./pages/PricingCalculator"
+import PricingHistory from "./pages/PricingHistory"
 
 function App() {
   return (
@@ -24,6 +28,10 @@ function App() {
         <Route path="/proposal-history" element={<ProposalHistory />} />
         <Route path="/cover-letter" element={<CoverLetter />} />
         <Route path="/cover-letter-history" element={<CoverLetterHistory />} />
+        <Route path="/gig-description" element={<GigDescription />} />
+        <Route path="/gig-description-history" element={<GigDescriptionHistory />} />
+        <Route path="/pricing-calculator" element={<PricingCalculator />} />
+        <Route path="/pricing-history" element={<PricingHistory />} />
       </Routes>
     </BrowserRouter>
   )
