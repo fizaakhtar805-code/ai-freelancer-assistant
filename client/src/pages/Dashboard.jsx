@@ -1,5 +1,8 @@
+import { useNavigate } from "react-router-dom"
+
 function Dashboard() {
-  // Read the logged-in user's info from browser storage
+  const navigate = useNavigate()
+
   const storedUser = localStorage.getItem("user")
   const user = storedUser ? JSON.parse(storedUser) : null
   const userName = user ? user.name : "Guest"
@@ -41,8 +44,10 @@ function Dashboard() {
 
       <h3 className="section-title">Quick Actions</h3>
       <div className="quick-actions">
-        <button>Create Proposal</button>
-        <button>Write Cover Letter</button>
+        <button onClick={() => navigate("/proposal")}>Create Proposal</button>
+        <button onClick={() => navigate("/proposal-history")}>Proposal History</button>
+        <button onClick={() => navigate("/cover-letter")}>Write Cover Letter</button>
+        <button onClick={() => navigate("/cover-letter-history")}>Cover Letter History</button>
         <button>Create Gig</button>
         <button>Generate Invoice</button>
         <button>Create Contract</button>

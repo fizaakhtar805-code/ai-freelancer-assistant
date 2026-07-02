@@ -5,6 +5,8 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const authRoutes = require("./routes/auth")
+const proposalRoutes = require("./routes/proposal")
+const coverLetterRoutes = require("./routes/coverletter")
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -16,6 +18,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use("/api/auth", authRoutes)
+app.use("/api/proposals", proposalRoutes)
+app.use("/api/coverletters", coverLetterRoutes)
 
 app.get("/", (req, res) => {
   res.send("Server is running! 🚀")
