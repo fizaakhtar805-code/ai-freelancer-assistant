@@ -11,6 +11,7 @@ function Dashboard() {
 
   const [proposalCount, setProposalCount] = useState(0)
   const [coverLetterCount, setCoverLetterCount] = useState(0)
+  const [invoiceCount, setInvoiceCount] = useState(0)
 
   useEffect(() => {
     async function loadCounts() {
@@ -33,6 +34,15 @@ function Dashboard() {
         setCoverLetterCount(lettersRes.data.length)
       } catch (err) {
         console.log("Failed to load cover letter count")
+      }
+
+      try {
+        const invoicesRes = await axios.get("http://localhost:5000/api/invoices", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setInvoiceCount(invoicesRes.data.length)
+      } catch (err) {
+        console.log("Failed to load invoice count")
       }
     }
 
@@ -61,7 +71,7 @@ function Dashboard() {
         </div>
 
         <div className="widget-card">
-          <h2>0</h2>
+          <h2>{invoiceCount}</h2>
           <p>Total Invoices</p>
         </div>
 
@@ -84,8 +94,12 @@ function Dashboard() {
         <button onClick={() => navigate("/gig-description-history")}>Gig History</button>
         <button onClick={() => navigate("/pricing-calculator")}>Price My Project</button>
         <button onClick={() => navigate("/pricing-history")}>Pricing History</button>
-        <button>Generate Invoice</button>
-        <button>Create Contract</button>
+        <button onClick={() => navigate("/client-reply")}>Client Reply</button>
+        <button onClick={() => navigate("/client-reply-history")}>Reply History</button>
+        <button onClick={() => navigate("/invoice")}>Generate Invoice</button>
+        <button onClick={() => navigate("/invoice-history")}>Invoice History</button>
+        <button onClick={() => navigate("/contract")}>Create Contract</button>
+        <button onClick={() => navigate("/contract-history")}>Contract History</button>
       </div>
     </div>
   )
