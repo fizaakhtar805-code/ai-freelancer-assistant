@@ -15,11 +15,23 @@ function Contract() {
   const [result, setResult] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [copied, setCopied] = useState(false)
   const [saveMsg, setSaveMsg] = useState("")
 
+  function validate() {
+    const errs = {}
+    if (!clientName.trim()) errs.clientName = "Client name is required"
+    if (!freelancerName.trim()) errs.freelancerName = "Freelancer name is required"
+    if (!projectScope.trim()) errs.projectScope = "Project scope is required"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   async function handleGenerate() {
     setError("")
+    if (!validate()) return
+
     setResult("")
     setSaveMsg("")
     setLoading(true)
@@ -85,17 +97,38 @@ function Contract() {
         <div className="generator-form">
           <div className="form-group">
             <label>Client Name *</label>
-            <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="e.g. Sarah Malik" />
+            <input
+              type="text"
+              className={fieldErrors.clientName ? "input-error" : ""}
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              placeholder="e.g. Sarah Malik"
+            />
+            {fieldErrors.clientName && <p className="field-error-text">{fieldErrors.clientName}</p>}
           </div>
 
           <div className="form-group">
             <label>Freelancer Name *</label>
-            <input type="text" value={freelancerName} onChange={(e) => setFreelancerName(e.target.value)} placeholder="e.g. Fiza Akhtar" />
+            <input
+              type="text"
+              className={fieldErrors.freelancerName ? "input-error" : ""}
+              value={freelancerName}
+              onChange={(e) => setFreelancerName(e.target.value)}
+              placeholder="e.g. Fiza Akhtar"
+            />
+            {fieldErrors.freelancerName && <p className="field-error-text">{fieldErrors.freelancerName}</p>}
           </div>
 
           <div className="form-group">
             <label>Project Scope *</label>
-            <textarea rows="4" value={projectScope} onChange={(e) => setProjectScope(e.target.value)} placeholder="Describe the work to be done..." />
+            <textarea
+              rows="4"
+              className={fieldErrors.projectScope ? "input-error" : ""}
+              value={projectScope}
+              onChange={(e) => setProjectScope(e.target.value)}
+              placeholder="Describe the work to be done..."
+            />
+            {fieldErrors.projectScope && <p className="field-error-text">{fieldErrors.projectScope}</p>}
           </div>
 
           <div className="form-group">

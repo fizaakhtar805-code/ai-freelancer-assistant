@@ -14,6 +14,10 @@ router.post("/generate", async (req, res) => {
       return res.status(400).json({ message: "Client message is required" })
     }
 
+    if (clientMessage.length > 2000) {
+      return res.status(400).json({ message: "Client message is too long (max 2000 characters)" })
+    }
+
     const prompt = `
 A client sent this message to a freelancer:
 

@@ -23,13 +23,24 @@ function GigDescription() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [copied, setCopied] = useState(false)
   const [saveMsg, setSaveMsg] = useState("")
 
   const hasResult = description || seoKeywords || faqSuggestions
 
+  function validate() {
+    const errs = {}
+    if (!serviceCategory.trim()) errs.serviceCategory = "Service category is required"
+    if (!skills.trim()) errs.skills = "Skills are required"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   async function handleGenerate() {
     setError("")
+    if (!validate()) return
+
     setDescription("")
     setSeoKeywords("")
     setFaqSuggestions("")
@@ -116,16 +127,29 @@ function GigDescription() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="generator-layout">
-        {/* LEFT: the input form */}
         <div className="generator-form">
           <div className="form-group">
             <label>Service Category *</label>
-            <input type="text" value={serviceCategory} onChange={(e) => setServiceCategory(e.target.value)} placeholder="e.g. Logo Design" />
+            <input
+              type="text"
+              className={fieldErrors.serviceCategory ? "input-error" : ""}
+              value={serviceCategory}
+              onChange={(e) => setServiceCategory(e.target.value)}
+              placeholder="e.g. Logo Design"
+            />
+            {fieldErrors.serviceCategory && <p className="field-error-text">{fieldErrors.serviceCategory}</p>}
           </div>
 
           <div className="form-group">
             <label>Skills *</label>
-            <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. Illustrator, Branding" />
+            <input
+              type="text"
+              className={fieldErrors.skills ? "input-error" : ""}
+              value={skills}
+              onChange={(e) => setSkills(e.target.value)}
+              placeholder="e.g. Illustrator, Branding"
+            />
+            {fieldErrors.skills && <p className="field-error-text">{fieldErrors.skills}</p>}
           </div>
 
           <div className="form-group">
@@ -158,7 +182,6 @@ function GigDescription() {
           </button>
         </div>
 
-        {/* RIGHT: the AI result */}
         <div className="generator-result">
           <div className="result-header">
             <h3>Generated Gig Listing</h3>

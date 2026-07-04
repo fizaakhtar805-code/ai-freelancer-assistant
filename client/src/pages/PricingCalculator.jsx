@@ -19,11 +19,22 @@ function PricingCalculator() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [saveMsg, setSaveMsg] = useState("")
+
+  function validate() {
+    const errs = {}
+    if (!hourlyRate || parseFloat(hourlyRate) <= 0) errs.hourlyRate = "Enter a valid hourly rate"
+    if (!estimatedHours || parseFloat(estimatedHours) <= 0) errs.estimatedHours = "Enter a valid number of hours"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
 
   async function handleCalculate() {
     setError("")
     setSaveMsg("")
+    if (!validate()) return
+
     setSuggestedPrice(null)
     setLoading(true)
 
@@ -95,12 +106,26 @@ function PricingCalculator() {
         <div className="generator-form">
           <div className="form-group">
             <label>Hourly Rate ($) *</label>
-            <input type="number" value={hourlyRate} onChange={(e) => setHourlyRate(e.target.value)} placeholder="e.g. 25" />
+            <input
+              type="number"
+              className={fieldErrors.hourlyRate ? "input-error" : ""}
+              value={hourlyRate}
+              onChange={(e) => setHourlyRate(e.target.value)}
+              placeholder="e.g. 25"
+            />
+            {fieldErrors.hourlyRate && <p className="field-error-text">{fieldErrors.hourlyRate}</p>}
           </div>
 
           <div className="form-group">
             <label>Estimated Hours *</label>
-            <input type="number" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)} placeholder="e.g. 20" />
+            <input
+              type="number"
+              className={fieldErrors.estimatedHours ? "input-error" : ""}
+              value={estimatedHours}
+              onChange={(e) => setEstimatedHours(e.target.value)}
+              placeholder="e.g. 20"
+            />
+            {fieldErrors.estimatedHours && <p className="field-error-text">{fieldErrors.estimatedHours}</p>}
           </div>
 
           <div className="form-group">
@@ -152,7 +177,7 @@ function PricingCalculator() {
 
           {suggestedPrice !== null && (
             <>
-              <h2 style={{ color: "#4361ee", marginBottom: "16px" }}>Suggested Price: ${suggestedPrice}</h2>
+              <h2 style={{ color: "var(--ink)", marginBottom: "16px" }}>Suggested Price: ${suggestedPrice}</h2>
 
               <label style={{ fontWeight: 600, fontSize: "14px", display: "block", margin: "12px 0 6px" }}>Recommended Delivery Time</label>
               <p className="result-text">{recommendedDeliveryTime}</p>

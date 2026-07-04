@@ -15,6 +15,10 @@ router.post("/generate", async (req, res) => {
       return res.status(400).json({ message: "Client name, freelancer name, and project scope are required" })
     }
 
+    if (projectScope.length > 2000) {
+      return res.status(400).json({ message: "Project scope is too long (max 2000 characters)" })
+    }
+
     const prompt = `
 Write a professional freelance service contract based on these details:
 

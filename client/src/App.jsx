@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
@@ -19,8 +20,15 @@ import Invoice from "./pages/Invoice"
 import InvoiceHistory from "./pages/InvoiceHistory"
 import Contract from "./pages/Contract"
 import ContractHistory from "./pages/ContractHistory"
+import Profile from "./pages/Profile"
+import Settings from "./pages/Settings"
 
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "light"
+    document.documentElement.setAttribute("data-theme", savedTheme)
+  }, [])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -44,6 +52,8 @@ function App() {
         <Route path="/invoice-history" element={<InvoiceHistory />} />
         <Route path="/contract" element={<Contract />} />
         <Route path="/contract-history" element={<ContractHistory />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   )

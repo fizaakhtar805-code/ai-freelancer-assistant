@@ -20,11 +20,22 @@ function CoverLetter() {
   const [result, setResult] = useState(editingLetter ? editingLetter.generatedContent : "")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [copied, setCopied] = useState(false)
   const [saveMsg, setSaveMsg] = useState("")
 
+  function validate() {
+    const errs = {}
+    if (!jobTitle.trim()) errs.jobTitle = "Job title is required"
+    if (!companyName.trim()) errs.companyName = "Company name is required"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   async function handleGenerate() {
     setError("")
+    if (!validate()) return
+
     setResult("")
     setSaveMsg("")
     setLoading(true)
@@ -104,16 +115,29 @@ function CoverLetter() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="generator-layout">
-        {/* LEFT: the input form */}
         <div className="generator-form">
           <div className="form-group">
             <label>Job Title *</label>
-            <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Frontend Developer" />
+            <input
+              type="text"
+              className={fieldErrors.jobTitle ? "input-error" : ""}
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              placeholder="e.g. Frontend Developer"
+            />
+            {fieldErrors.jobTitle && <p className="field-error-text">{fieldErrors.jobTitle}</p>}
           </div>
 
           <div className="form-group">
             <label>Company Name *</label>
-            <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. TechNova Inc." />
+            <input
+              type="text"
+              className={fieldErrors.companyName ? "input-error" : ""}
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g. TechNova Inc."
+            />
+            {fieldErrors.companyName && <p className="field-error-text">{fieldErrors.companyName}</p>}
           </div>
 
           <div className="form-group">
@@ -147,7 +171,6 @@ function CoverLetter() {
           </button>
         </div>
 
-        {/* RIGHT: the AI result */}
         <div className="generator-result">
           <div className="result-header">
             <h3>Generated Cover Letter</h3>

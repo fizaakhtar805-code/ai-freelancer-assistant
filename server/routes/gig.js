@@ -15,6 +15,10 @@ router.post("/generate", async (req, res) => {
       return res.status(400).json({ message: "Service category and skills are required" })
     }
 
+    if (features && features.length > 1000) {
+      return res.status(400).json({ message: "Features text is too long (max 1000 characters)" })
+    }
+
     const prompt = `
 Write a professional freelance gig listing based on these details:
 
@@ -35,10 +39,8 @@ Respond with ONLY a valid JSON object (no markdown, no extra text, no code fence
 
     const aiResponse = await generateAIContent(prompt)
 
-    // Remove code fences if present
     let cleaned = aiResponse.replace(/```json|```/g, "").trim()
 
-    // Fix raw line breaks INSIDE quoted strings (turn them into proper \n so JSON.parse doesn't break)
     cleaned = cleaned.replace(/"(?:[^"\\]|\\.)*"/g, (match) =>
       match.replace(/\r\n|\r|\n/g, "\\n")
     )

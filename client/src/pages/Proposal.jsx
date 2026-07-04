@@ -21,11 +21,22 @@ function Proposal() {
   const [result, setResult] = useState(editingProposal ? editingProposal.generatedContent : "")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [copied, setCopied] = useState(false)
   const [saveMsg, setSaveMsg] = useState("")
 
+  function validate() {
+    const errs = {}
+    if (!projectTitle.trim()) errs.projectTitle = "Project title is required"
+    if (!projectDescription.trim()) errs.projectDescription = "Project description is required"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   async function handleGenerate() {
     setError("")
+    if (!validate()) return
+
     setResult("")
     setSaveMsg("")
     setLoading(true)
@@ -80,13 +91,11 @@ function Proposal() {
 
     try {
       if (editId) {
-        // UPDATE an existing proposal
         await axios.put(`http://localhost:5000/api/proposals/${editId}`, proposalData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Proposal updated! ✅")
       } else {
-        // CREATE a new proposal
         await axios.post("http://localhost:5000/api/proposals/save", proposalData, {
           headers: { Authorization: `Bearer ${token}` },
         })
@@ -109,7 +118,6 @@ function Proposal() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="generator-layout">
-        {/* LEFT: the input form */}
         <div className="generator-form">
           <div className="form-group">
             <label>Client Name</label>
@@ -118,12 +126,26 @@ function Proposal() {
 
           <div className="form-group">
             <label>Project Title *</label>
-            <input type="text" value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} placeholder="e.g. E-commerce Website" />
+            <input
+              type="text"
+              className={fieldErrors.projectTitle ? "input-error" : ""}
+              value={projectTitle}
+              onChange={(e) => setProjectTitle(e.target.value)}
+              placeholder="e.g. E-commerce Website"
+            />
+            {fieldErrors.projectTitle && <p className="field-error-text">{fieldErrors.projectTitle}</p>}
           </div>
 
           <div className="form-group">
             <label>Project Description *</label>
-            <textarea rows="4" value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} placeholder="Describe what the client needs..." />
+            <textarea
+              rows="4"
+              className={fieldErrors.projectDescription ? "input-error" : ""}
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+              placeholder="Describe what the client needs..."
+            />
+            {fieldErrors.projectDescription && <p className="field-error-text">{fieldErrors.projectDescription}</p>}
           </div>
 
           <div className="form-group">
@@ -157,7 +179,6 @@ function Proposal() {
           </button>
         </div>
 
-        {/* RIGHT: the AI result */}
         <div className="generator-result">
           <div className="result-header">
             <h3>Generated Proposal</h3>

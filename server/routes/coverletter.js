@@ -15,6 +15,10 @@ router.post("/generate", async (req, res) => {
       return res.status(400).json({ message: "Job title and company name are required" })
     }
 
+    if (experience && experience.length > 2000) {
+      return res.status(400).json({ message: "Experience text is too long (max 2000 characters)" })
+    }
+
     const prompt = `
 Write a professional cover letter based on these details:
 

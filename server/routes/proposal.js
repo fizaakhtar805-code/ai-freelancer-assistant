@@ -15,6 +15,10 @@ router.post("/generate", async (req, res) => {
       return res.status(400).json({ message: "Project title and description are required" })
     }
 
+    if (projectDescription.length > 2000) {
+      return res.status(400).json({ message: "Project description is too long (max 2000 characters)" })
+    }
+
     const prompt = `
 Write a professional freelance project proposal based on these details:
 
@@ -86,14 +90,12 @@ router.get("/:id/pdf", protect, async (req, res) => {
 
     const doc = new PDFDocument({ margin: 50 })
 
-    // tell the browser this is a downloadable PDF file
     res.setHeader("Content-Type", "application/pdf")
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="${(proposal.projectTitle || "proposal").replace(/[^a-z0-9]/gi, "_")}.pdf"`
     )
 
-    // pipe the generated PDF directly into the response
     doc.pipe(res)
 
     doc.fontSize(20).text(proposal.projectTitle || "Proposal", { underline: true })

@@ -11,11 +11,21 @@ function ClientReply() {
   const [result, setResult] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
   const [copied, setCopied] = useState(false)
   const [saveMsg, setSaveMsg] = useState("")
 
+  function validate() {
+    const errs = {}
+    if (!clientMessage.trim()) errs.clientMessage = "Client message is required"
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
   async function handleGenerate() {
     setError("")
+    if (!validate()) return
+
     setResult("")
     setSaveMsg("")
     setLoading(true)
@@ -77,7 +87,14 @@ function ClientReply() {
         <div className="generator-form">
           <div className="form-group">
             <label>Client Message *</label>
-            <textarea rows="8" value={clientMessage} onChange={(e) => setClientMessage(e.target.value)} placeholder="Paste what the client wrote..." />
+            <textarea
+              rows="8"
+              className={fieldErrors.clientMessage ? "input-error" : ""}
+              value={clientMessage}
+              onChange={(e) => setClientMessage(e.target.value)}
+              placeholder="Paste what the client wrote..."
+            />
+            {fieldErrors.clientMessage && <p className="field-error-text">{fieldErrors.clientMessage}</p>}
           </div>
 
           <div className="form-group">
