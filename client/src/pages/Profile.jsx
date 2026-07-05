@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Profile() {
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ function Profile() {
         return
       }
       try {
-        const response = await axios.get("http://localhost:5000/api/profile", {
+        const response = await axios.get(`${API_URL}/api/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setName(response.data.name)
@@ -68,7 +69,7 @@ function Profile() {
 
     try {
       await axios.put(
-        "http://localhost:5000/api/profile",
+        `${API_URL}/api/profile`,
         { name, bio, jobTitle, profilePicture },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -101,7 +102,7 @@ function Profile() {
     const token = localStorage.getItem("token")
     try {
       await axios.put(
-        "http://localhost:5000/api/profile/change-password",
+        `${API_URL}/api/profile/change-password`,
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -130,7 +131,6 @@ function Profile() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="generator-layout">
-        {/* LEFT: Profile details */}
         <div className="generator-form">
           <h3 style={{ marginBottom: "16px" }}>Profile Details</h3>
 
@@ -186,7 +186,6 @@ function Profile() {
           <button className="btn-primary" onClick={handleSaveProfile}>Save Profile</button>
         </div>
 
-        {/* RIGHT: Change password */}
         <div className="generator-result">
           <h3 style={{ marginBottom: "16px" }}>Change Password</h3>
 

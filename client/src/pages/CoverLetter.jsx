@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function CoverLetter() {
   const navigate = useNavigate()
@@ -41,7 +42,7 @@ function CoverLetter() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/coverletters/generate", {
+      const response = await axios.post(`${API_URL}/api/coverletters/generate`, {
         jobTitle,
         companyName,
         experience,
@@ -88,12 +89,12 @@ function CoverLetter() {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/api/coverletters/${editId}`, letterData, {
+        await axios.put(`${API_URL}/api/coverletters/${editId}`, letterData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Cover letter updated! ✅")
       } else {
-        await axios.post("http://localhost:5000/api/coverletters/save", letterData, {
+        await axios.post(`${API_URL}/api/coverletters/save`, letterData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Cover letter saved! ✅")

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function InvoiceHistory() {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ function InvoiceHistory() {
       return
     }
     try {
-      const response = await axios.get("http://localhost:5000/api/invoices", {
+      const response = await axios.get(`${API_URL}/api/invoices`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setInvoices(response.data)
@@ -34,7 +35,7 @@ function InvoiceHistory() {
   async function handleDelete(id) {
     const token = localStorage.getItem("token")
     try {
-      await axios.delete(`http://localhost:5000/api/invoices/${id}`, {
+      await axios.delete(`${API_URL}/api/invoices/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setInvoices(invoices.filter((i) => i._id !== id))
@@ -46,7 +47,7 @@ function InvoiceHistory() {
   async function handleExportPDF(id) {
     const token = localStorage.getItem("token")
     try {
-      const response = await axios.get(`http://localhost:5000/api/invoices/${id}/pdf`, {
+      const response = await axios.get(`${API_URL}/api/invoices/${id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
       })

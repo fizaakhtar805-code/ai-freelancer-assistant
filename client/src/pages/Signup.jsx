@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Signup() {
   const [name, setName] = useState("")
@@ -18,7 +19,7 @@ function Signup() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/signup", {
+      const response = await axios.post(`${API_URL}/api/auth/signup`, {
         name,
         email,
         password,
@@ -44,9 +45,12 @@ function Signup() {
         {success && <p style={{ color: "green", textAlign: "center" }}>{success}</p>}
 
         <div className="form-group">
-          <label>Full Name</label>
+          <label htmlFor="signup-name">Full Name</label>
           <input
+            id="signup-name"
+            name="name"
             type="text"
+            autoComplete="name"
             placeholder="Enter your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -54,9 +58,12 @@ function Signup() {
         </div>
 
         <div className="form-group">
-          <label>Email</label>
+          <label htmlFor="signup-email">Email</label>
           <input
+            id="signup-email"
+            name="email"
             type="email"
+            autoComplete="username"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -64,10 +71,13 @@ function Signup() {
         </div>
 
         <div className="form-group">
-          <label>Password</label>
+          <label htmlFor="signup-password">Password</label>
           <div style={{ position: "relative" }}>
             <input
+              id="signup-password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               placeholder="Create a password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -94,7 +104,7 @@ function Signup() {
           {loading ? "Please wait..." : "Sign Up"}
         </button>
 
-        <p className="auth-footer">Already have an account? <Link to="/">Login</Link></p>
+        <p className="auth-footer">Already have an account? <Link to="/login">Login</Link></p>
       </div>
     </div>
   )

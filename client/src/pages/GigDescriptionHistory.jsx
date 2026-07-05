@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function GigDescriptionHistory() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ function GigDescriptionHistory() {
       return
     }
     try {
-      const response = await axios.get("http://localhost:5000/api/gigs", {
+      const response = await axios.get(`${API_URL}/api/gigs`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setGigs(response.data)
@@ -35,7 +36,7 @@ function GigDescriptionHistory() {
   async function handleDelete(id) {
     const token = localStorage.getItem("token")
     try {
-      await axios.delete(`http://localhost:5000/api/gigs/${id}`, {
+      await axios.delete(`${API_URL}/api/gigs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setGigs(gigs.filter((g) => g._id !== id))
@@ -58,7 +59,7 @@ function GigDescriptionHistory() {
   async function handleExportPDF(id, title) {
     const token = localStorage.getItem("token")
     try {
-      const response = await axios.get(`http://localhost:5000/api/gigs/${id}/pdf`, {
+      const response = await axios.get(`${API_URL}/api/gigs/${id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
       })

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function ForgotPassword() {
   const [email, setEmail] = useState("")
@@ -12,7 +13,7 @@ function ForgotPassword() {
     setError("")
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/forgot-password", {
+      const response = await axios.post(`${API_URL}/api/auth/forgot-password`, {
         email,
       })
       setMessage(response.data.message)
@@ -30,9 +31,12 @@ function ForgotPassword() {
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
         <div className="form-group">
-          <label>Email</label>
+          <label htmlFor="forgot-email">Email</label>
           <input
+            id="forgot-email"
+            name="email"
             type="email"
+            autoComplete="username"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -41,7 +45,7 @@ function ForgotPassword() {
 
         <button className="btn-primary" onClick={handleSubmit}>Send Reset Link</button>
 
-        <p className="auth-footer">Remember your password? <Link to="/">Login</Link></p>
+        <p className="auth-footer">Remember your password? <Link to="/login">Login</Link></p>
       </div>
     </div>
   )

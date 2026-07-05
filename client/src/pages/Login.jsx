@@ -2,6 +2,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Login() {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ function Login() {
     setError("")
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
         email,
         password,
       })
@@ -41,9 +42,12 @@ function Login() {
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
         <div className="form-group">
-          <label>Email</label>
+          <label htmlFor="login-email">Email</label>
           <input
+            id="login-email"
+            name="email"
             type="email"
+            autoComplete="username"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -51,10 +55,13 @@ function Login() {
         </div>
 
         <div className="form-group">
-          <label>Password</label>
+          <label htmlFor="login-password">Password</label>
           <div style={{ position: "relative" }}>
             <input
+              id="login-password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

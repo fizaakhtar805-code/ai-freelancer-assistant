@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Contract() {
   const navigate = useNavigate()
@@ -37,7 +38,7 @@ function Contract() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/contracts/generate", {
+      const response = await axios.post(`${API_URL}/api/contracts/generate`, {
         clientName,
         freelancerName,
         projectScope,
@@ -74,7 +75,7 @@ function Contract() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/contracts/save",
+        `${API_URL}/api/contracts/save`,
         { clientName, freelancerName, projectScope, timeline, paymentTerms, termsAndConditions, generatedContract: result },
         { headers: { Authorization: `Bearer ${token}` } }
       )

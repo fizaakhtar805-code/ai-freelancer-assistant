@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useSearchParams, Link } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams()
@@ -12,7 +13,7 @@ function VerifyEmail() {
     async function verify() {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/auth/verify-email?token=${token}`
+          `${API_URL}/api/auth/verify-email?token=${token}`
         )
         setMessage(response.data.message)
       } catch (err) {
@@ -32,7 +33,7 @@ function VerifyEmail() {
       <div className="auth-box" style={{ textAlign: "center" }}>
         <h1>Email Verification</h1>
         <p style={{ margin: "20px 0" }}>{message}</p>
-        <Link to="/" className="btn-primary" style={{ display: "inline-block", textDecoration: "none", textAlign: "center" }}>
+        <Link to="/login" className="btn-primary" style={{ display: "inline-block", textDecoration: "none", textAlign: "center" }}>
           Go to Login
         </Link>
       </div>

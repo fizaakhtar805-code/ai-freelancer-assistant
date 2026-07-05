@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useSearchParams, useNavigate, Link } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -21,12 +22,12 @@ function ResetPassword() {
     const token = searchParams.get("token")
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/reset-password", {
+      const response = await axios.post(`${API_URL}/api/auth/reset-password`, {
         token,
         password,
       })
       setMessage(response.data.message)
-      setTimeout(() => navigate("/"), 2000)
+      setTimeout(() => navigate("/login"), 2000)
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message)
@@ -47,10 +48,13 @@ function ResetPassword() {
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
         <div className="form-group">
-          <label>New Password</label>
+          <label htmlFor="reset-password">New Password</label>
           <div style={{ position: "relative" }}>
             <input
+              id="reset-password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               placeholder="Enter your new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -77,7 +81,7 @@ function ResetPassword() {
           {loading ? "Please wait..." : "Reset Password"}
         </button>
 
-        <p className="auth-footer">Back to <Link to="/">Login</Link></p>
+        <p className="auth-footer">Back to <Link to="/login">Login</Link></p>
       </div>
     </div>
   )

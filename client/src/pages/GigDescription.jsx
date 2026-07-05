@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function GigDescription() {
   const navigate = useNavigate()
@@ -48,7 +49,7 @@ function GigDescription() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/gigs/generate", {
+      const response = await axios.post(`${API_URL}/api/gigs/generate`, {
         serviceCategory,
         skills,
         experienceLevel,
@@ -100,12 +101,12 @@ function GigDescription() {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/api/gigs/${editId}`, gigData, {
+        await axios.put(`${API_URL}/api/gigs/${editId}`, gigData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Gig description updated! ✅")
       } else {
-        await axios.post("http://localhost:5000/api/gigs/save", gigData, {
+        await axios.post(`${API_URL}/api/gigs/save`, gigData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Gig description saved! ✅")

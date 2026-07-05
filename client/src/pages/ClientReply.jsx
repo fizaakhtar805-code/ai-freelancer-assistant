@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function ClientReply() {
   const navigate = useNavigate()
@@ -31,7 +32,7 @@ function ClientReply() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/clientreplies/generate", {
+      const response = await axios.post(`${API_URL}/api/clientreplies/generate`, {
         clientMessage,
         tone,
       })
@@ -64,7 +65,7 @@ function ClientReply() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/clientreplies/save",
+        `${API_URL}/api/clientreplies/save`,
         { clientMessage, tone, generatedReply: result },
         { headers: { Authorization: `Bearer ${token}` } }
       )

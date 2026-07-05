@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -36,14 +37,14 @@ function Dashboard() {
       let allActivities = []
 
       try {
-        const profileRes = await axios.get("http://localhost:5000/api/profile", { headers })
+        const profileRes = await axios.get(`${API_URL}/api/profile`, { headers })
         setProfilePicture(profileRes.data.profilePicture)
       } catch (err) {
         console.log("Failed to load profile picture")
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/proposals", { headers })
+        const res = await axios.get(`${API_URL}/api/proposals`, { headers })
         setProposalCount(res.data.length)
         res.data.forEach((p) =>
           allActivities.push({ label: `Proposal created for ${p.clientName || "a client"}`, date: p.createdAt })
@@ -53,7 +54,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/coverletters", { headers })
+        const res = await axios.get(`${API_URL}/api/coverletters`, { headers })
         setCoverLetterCount(res.data.length)
         res.data.forEach((l) =>
           allActivities.push({ label: `Cover letter written for ${l.companyName || "a company"}`, date: l.createdAt })
@@ -63,7 +64,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/invoices", { headers })
+        const res = await axios.get(`${API_URL}/api/invoices`, { headers })
         setInvoiceCount(res.data.length)
         res.data.forEach((i) =>
           allActivities.push({ label: `Invoice created for ${i.clientName} — $${i.totalAmount.toFixed(2)}`, date: i.createdAt })
@@ -73,7 +74,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/gigs", { headers })
+        const res = await axios.get(`${API_URL}/api/gigs`, { headers })
         res.data.forEach((g) =>
           allActivities.push({ label: `Gig description created: ${g.serviceCategory || "Untitled"}`, date: g.createdAt })
         )
@@ -82,7 +83,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/pricing", { headers })
+        const res = await axios.get(`${API_URL}/api/pricing`, { headers })
         res.data.forEach((pr) =>
           allActivities.push({ label: `Pricing estimate calculated: $${pr.suggestedPrice}`, date: pr.createdAt })
         )
@@ -91,7 +92,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/clientreplies", { headers })
+        const res = await axios.get(`${API_URL}/api/clientreplies`, { headers })
         res.data.forEach((r) =>
           allActivities.push({ label: `Client reply drafted (${r.tone})`, date: r.createdAt })
         )
@@ -100,7 +101,7 @@ function Dashboard() {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/contracts", { headers })
+        const res = await axios.get(`${API_URL}/api/contracts`, { headers })
         res.data.forEach((c) =>
           allActivities.push({ label: `Contract created for ${c.clientName || "a client"}`, date: c.createdAt })
         )
@@ -118,7 +119,7 @@ function Dashboard() {
   function handleLogout() {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
-    navigate("/")
+    navigate("/login")
   }
 
   return (

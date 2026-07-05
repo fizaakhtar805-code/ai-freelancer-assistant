@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Invoice() {
   const navigate = useNavigate()
@@ -37,7 +38,7 @@ function Invoice() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/invoices/save",
+        `${API_URL}/api/invoices/save`,
         { clientName, clientEmail, projectDetails, services, amount, dueDate, tax },
         { headers: { Authorization: `Bearer ${token}` } }
       )

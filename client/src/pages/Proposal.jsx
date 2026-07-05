@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function Proposal() {
   const navigate = useNavigate()
@@ -42,7 +43,7 @@ function Proposal() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/proposals/generate", {
+      const response = await axios.post(`${API_URL}/api/proposals/generate`, {
         clientName,
         projectTitle,
         projectDescription,
@@ -91,12 +92,12 @@ function Proposal() {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/api/proposals/${editId}`, proposalData, {
+        await axios.put(`${API_URL}/api/proposals/${editId}`, proposalData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Proposal updated! ✅")
       } else {
-        await axios.post("http://localhost:5000/api/proposals/save", proposalData, {
+        await axios.post(`${API_URL}/api/proposals/save`, proposalData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setSaveMsg("Proposal saved! ✅")

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function ProposalHistory() {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ function ProposalHistory() {
     }
 
     try {
-      const response = await axios.get("http://localhost:5000/api/proposals", {
+      const response = await axios.get(`${API_URL}/api/proposals`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setProposals(response.data)
@@ -39,10 +40,9 @@ function ProposalHistory() {
   async function handleDelete(id) {
     const token = localStorage.getItem("token")
     try {
-      await axios.delete(`http://localhost:5000/api/proposals/${id}`, {
+      await axios.delete(`${API_URL}/api/proposals/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      // remove it from the list on screen
       setProposals(proposals.filter((p) => p._id !== id))
     } catch (err) {
       alert("Failed to delete.")
@@ -62,12 +62,11 @@ function ProposalHistory() {
   async function handleExportPDF(id, title) {
     const token = localStorage.getItem("token")
     try {
-      const response = await axios.get(`http://localhost:5000/api/proposals/${id}/pdf`, {
+      const response = await axios.get(`${API_URL}/api/proposals/${id}/pdf`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
       })
 
-      // create a temporary link to trigger the browser's download
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement("a")
       link.href = url

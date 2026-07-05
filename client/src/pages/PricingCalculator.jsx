@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_URL } from "../config"
 
 function PricingCalculator() {
   const navigate = useNavigate()
@@ -39,7 +40,7 @@ function PricingCalculator() {
     setLoading(true)
 
     try {
-      const response = await axios.post("http://localhost:5000/api/pricing/generate", {
+      const response = await axios.post(`${API_URL}/api/pricing/generate`, {
         hourlyRate,
         estimatedHours,
         projectComplexity,
@@ -72,7 +73,7 @@ function PricingCalculator() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/pricing/save",
+        `${API_URL}/api/pricing/save`,
         {
           hourlyRate,
           estimatedHours,
