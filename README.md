@@ -6,7 +6,7 @@ Built as a 5-day internship project at **Softgrid Solutions**.
 
 ## Live Demo
 
-- **Live App:** _[add your deployment link here once deployed]_
+- **Live App:** https://ai-freelancer-assistant-chi.vercel.app
 - **GitHub Repository:** https://github.com/fizaakhtar805-code/ai-freelancer-assistant
 
 ## Tech Stack
