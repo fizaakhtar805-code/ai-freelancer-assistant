@@ -33,28 +33,40 @@ router.post("/signup", async (req, res) => {
       password: hashedPassword,
       verificationToken,
     })
-    await newUser.save()
 
     const newProfile = new Profile({
       user: newUser._id,
     })
-    await newProfile.save()
 
     const verifyLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`
 
-    await sendEmail(
-      email,
-      "Verify your email - AI Freelancer Assistant",
-      `
-        <h2>Welcome, ${name}!</h2>
-        <p>Thank you for signing up. Please verify your email by clicking the button below:</p>
-        <a href="${verifyLink}" style="display:inline-block;padding:12px 24px;background:#4361ee;color:#fff;text-decoration:none;border-radius:8px;">Verify Email</a>
-        <p>Or copy this link into your browser:</p>
-        <p>${verifyLink}</p>
-      `
-    )
+    let emailSent = true
+    try {
+      await sendEmail(
+        email,
+        "Verify your email - AI Freelancer Assistant",
+        `
+          <h2>Welcome, ${name}!</h2>
+          <p>Thank you for signing up. Please verify your email by clicking the button below:</p>
+          <a href="${verifyLink}" style="display:inline-block;padding:12px 24px;background:#4361ee;color:#fff;text-decoration:none;border-radius:8px;">Verify Email</a>
+          <p>Or copy this link into your browser:</p>
+          <p>${verifyLink}</p>
+        `
+      )
+    } catch (emailError) {
+      console.log("Email sending failed, auto-verifying account instead:", emailError.message)
+      emailSent = false
+      newUser.isVerified = true
+    }
 
-    res.status(201).json({ message: "Account created! Please check your email to verify your account." })
+    await newUser.save()
+    await newProfile.save()
+
+    if (emailSent) {
+      res.status(201).json({ message: "Account created! Please check your email to verify your account." })
+    } else {
+      res.status(201).json({ message: "Account created! You can log in now." })
+    }
   } catch (error) {
     console.log("Signup error:", error)
     res.status(500).json({ message: "Something went wrong" })
@@ -130,31 +142,33 @@ router.post("/forgot-password", async (req, res) => {
     const { email } = req.body
 
     const user = await User.findOne({ email })
-    // For security, we don't reveal whether the email exists
     if (!user) {
       return res.status(200).json({ message: "If that email exists, a reset link has been sent." })
     }
 
-    // Create a reset token valid for 1 hour
     const resetToken = crypto.randomBytes(32).toString("hex")
     user.resetToken = resetToken
-    user.resetTokenExpiry = Date.now() + 3600000 // 1 hour from now
+    user.resetTokenExpiry = Date.now() + 3600000
     await user.save()
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`
 
-    await sendEmail(
-      email,
-      "Reset your password - AI Freelancer Assistant",
-      `
-        <h2>Password Reset Request</h2>
-        <p>You asked to reset your password. Click the button below to set a new one:</p>
-        <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#4361ee;color:#fff;text-decoration:none;border-radius:8px;">Reset Password</a>
-        <p>Or copy this link into your browser:</p>
-        <p>${resetLink}</p>
-        <p>This link will expire in 1 hour. If you didn't request this, you can ignore this email.</p>
-      `
-    )
+    try {
+      await sendEmail(
+        email,
+        "Reset your password - AI Freelancer Assistant",
+        `
+          <h2>Password Reset Request</h2>
+          <p>You asked to reset your password. Click the button below to set a new one:</p>
+          <a href="${resetLink}" style="display:inline-block;padding:12px 24px;background:#4361ee;color:#fff;text-decoration:none;border-radius:8px;">Reset Password</a>
+          <p>Or copy this link into your browser:</p>
+          <p>${resetLink}</p>
+          <p>This link will expire in 1 hour. If you didn't request this, you can ignore this email.</p>
+        `
+      )
+    } catch (emailError) {
+      console.log("Reset email failed to send:", emailError.message)
+    }
 
     res.status(200).json({ message: "If that email exists, a reset link has been sent." })
   } catch (error) {
@@ -172,7 +186,6 @@ router.post("/reset-password", async (req, res) => {
       return res.status(400).json({ message: "Please enter a new password" })
     }
 
-    // Find user with this token that hasn't expired
     const user = await User.findOne({
       resetToken: token,
       resetTokenExpiry: { $gt: Date.now() },
@@ -182,7 +195,6 @@ router.post("/reset-password", async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired reset link" })
     }
 
-    // Hash and save the new password
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(password, salt)
     user.resetToken = ""
