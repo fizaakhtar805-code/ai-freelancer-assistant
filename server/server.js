@@ -23,6 +23,9 @@ mongoose
 
 const app = express()
 
+// Trust Railway's proxy so rate-limiter reads the real client IP correctly
+app.set('trust proxy', 1)
+
 // Security headers
 app.use(helmet())
 
